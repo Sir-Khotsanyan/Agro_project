@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="16dp">
+
+    <EditText
+        android:id="@+id/edit_text_offer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:hint="@string/name"
+        android:maxLines="1"
+        android:maxLength="12"
+        android:imeOptions="actionNext"
+        android:inputType="text"
+        tools:ignore="Autofill,VisualLintTextFieldSize" />
+
+    <EditText
+        android:id="@+id/edit_text_weight"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"
+        android:textSize="20sp"
+        android:maxLines="1"
+        android:maxLength="8"
+        android:imeOptions="actionNext"
+        android:hint="@string/weight"
+        tools:ignore="Autofill,VisualLintTextFieldSize" />
+
+    <EditText
+        android:id="@+id/edit_text_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:inputType="number"
+        android:maxLines="1"
+        android:maxLength="5"
+        android:imeOptions="actionNext"
+        android:hint="@string/price"
+        tools:ignore="Autofill,VisualLintTextFieldSize" />
+
+    <EditText
+        android:id="@+id/edit_text_city"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        android:inputType="text"
+        android:maxLines="1"
+        android:maxLength="16"
+        android:imeOptions="actionDone"
+        android:hint="@string/city"
+        tools:ignore="Autofill,VisualLintTextFieldSize" />
+
+    <TextView
+        android:id="@+id/util_when_unnecessary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/util_when_unnecessary"
+        android:inputType="date"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:imeOptions="actionNext"
+        tools:ignore="TextViewEdits,TouchTargetSizeCheck" />
+
+
+</LinearLayout>

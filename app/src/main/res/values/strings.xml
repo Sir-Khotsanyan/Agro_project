@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Agro</string>
+    <string name="no_result">Ոչ մի արդյունք</string>
+    <string name="username">Օգտանուն</string>
+    <string name="email">Էլ․ փոստ:   </string>
+    <string name="password">Գաղտնաբառ:   </string>
+    <string name="title_request">Առք</string>
+    <string name="title_offer">Վաճառք</string>
+    <string name="title_profile">Տվյալներ</string>
+    <string name="logout">Դուրս գալ</string>
+    <string name="login_with_google">Մուտք Google հաշվի միջոցով</string>
+    <string name="label_google_login">Google Login</string>
+    <string name="kilogram">կգ</string>
+    <string name="name">Անվանում</string>
+    <string name="weight">Քաշը(կգ)</string>
+    <string name="price">Գինը(1կգ-ի համար)</string>
+    <string name="util_when_unnecessary">Միչև երբ է այն անհրաժեշտ</string>
+    <string name="amd">դրամ</string>
+    <string name="city">Քաղաք</string>
+</resources>
