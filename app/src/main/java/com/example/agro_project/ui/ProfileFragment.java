@@ -1,76 +1,82 @@
 package com.example.agro_project.ui;
 
-import android.app.ProgressDialog;
+import android.app.AlertDialog;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
-import android.util.Log;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.example.agro_project.LoginActivity;
 import com.example.agro_project.databinding.FragmentProfileBinding;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.auth.FirebaseUser;
 
 public class ProfileFragment extends Fragment {
-    private FragmentProfileBinding binding;
+    private Handler handler;
+    private AlertDialog alertDialog;
+    private boolean isLoggingOut = false;
 
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentProfileBinding.inflate(inflater, container, false);
-        FirebaseAuth mAuth = FirebaseAuth.getInstance();
+        FragmentProfileBinding binding = FragmentProfileBinding.inflate(inflater, container, false);
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            String username = user.getDisplayName();
+            String gmail = user.getEmail();
 
-        if(mAuth.getCurrentUser()!=null){
-            String uid= mAuth.getCurrentUser().getUid();
-            DatabaseReference userRef= FirebaseDatabase.getInstance().getReference().child("users").child(uid);
-
-            userRef.addValueEventListener(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if(snapshot.exists()){
-                        String username=snapshot.child("username").getValue(String.class);
-                        String email=snapshot.child("email").getValue(String.class);
-
-                        binding.profileUsername.setText(username);
-                        binding.profileEmail.setText(email);
-                    }
-                }
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
-        }else{
-            Log.e("TAG","Current user is null");
+            binding.profileUsername.setText(username);
+            binding.profileEmail.setText(gmail);
         }
 
         binding.logoutButton.setOnClickListener(view -> {
-            ProgressDialog progressDialog = new ProgressDialog(getContext());
-            progressDialog.setMessage("Դուրս գալ...");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
-
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            if (isLoggingOut) {
+                return;
             }
-            progressDialog.dismiss();
 
-            FirebaseAuth.getInstance().signOut();
-            startActivity(new Intent(getActivity(), LoginActivity.class));
-            getActivity().finish();
+            AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+            builder.setMessage("Դուրս գալ...");
 
+
+            alertDialog = builder.create();
+
+            alertDialog.setOnShowListener(dialog -> {
+                TextView messageTextView = alertDialog.findViewById(android.R.id.message);
+                if (messageTextView != null) {
+                    messageTextView.setTextColor(Color.RED);
+                }
+            });
+
+            alertDialog.show();
+
+            isLoggingOut = true;
+            handler = new Handler();
+            handler.postDelayed(() -> {
+                alertDialog.dismiss();
+                FirebaseAuth.getInstance().signOut();
+                Intent intent = new Intent(requireActivity(), LoginActivity.class);
+                startActivity(intent);
+                isLoggingOut = false;
+            }, 2000);
         });
 
         return binding.getRoot();
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (handler != null) {
+            handler.removeCallbacksAndMessages(null);
+        }
+        if (alertDialog != null && alertDialog.isShowing()) {
+            alertDialog.dismiss();
+        }
+    }
 }
+

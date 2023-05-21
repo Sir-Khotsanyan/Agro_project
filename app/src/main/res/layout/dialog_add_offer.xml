@@ -50,7 +50,7 @@
         android:inputType="text"
         android:maxLines="1"
         android:maxLength="16"
-        android:imeOptions="actionDone"
+        android:imeOptions="actionNext"
         android:hint="@string/city"
         tools:ignore="Autofill,VisualLintTextFieldSize" />
 

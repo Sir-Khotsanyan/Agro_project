@@ -13,4 +13,19 @@
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
     </style>
+
+    <style name="CustomDatePicker" parent="@android:style/Widget.Material.Light.DatePicker">
+        <!-- Customize the colors here -->
+        <item name="android:headerBackground">@color/sheen_green</item>
+    </style>
+
+    <style name="CustomButtonBarButton" parent="Widget.AppCompat.Button.ButtonBar.AlertDialog">
+        <item name="android:textColor">@color/sheen_green</item>
+    </style>
+
+    <style name="CustomDatePickerDialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:datePickerStyle">@style/CustomDatePicker</item>
+        <item name="android:buttonBarButtonStyle">@style/CustomButtonBarButton</item>
+    </style>
+
 </resources>

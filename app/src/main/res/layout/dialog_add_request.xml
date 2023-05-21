@@ -11,13 +11,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="20sp"
-        android:inputType="text"
+        android:inputType="text|textNoSuggestions"
         android:maxLines="1"
         android:maxLength="12"
         android:imeOptions="actionNext"
         android:hint="@string/name"
         tools:ignore="Autofill,VisualLintTextFieldSize" />
-
 
     <EditText
         android:id="@+id/edit_text_weight"
@@ -51,7 +50,7 @@
         android:inputType="text"
         android:maxLines="1"
         android:maxLength="16"
-        android:imeOptions="actionDone"
+        android:imeOptions="actionNext"
         android:hint="@string/city"
         tools:ignore="Autofill,VisualLintTextFieldSize" />
 

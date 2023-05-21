@@ -2,8 +2,7 @@
     <string name="app_name">Agro</string>
     <string name="no_result">Ոչ մի արդյունք</string>
     <string name="username">Օգտանուն</string>
-    <string name="email">Էլ․ փոստ:   </string>
-    <string name="password">Գաղտնաբառ:   </string>
+    <string name="email">Էլ․ փոստ:    </string>
     <string name="title_request">Առք</string>
     <string name="title_offer">Վաճառք</string>
     <string name="title_profile">Տվյալներ</string>

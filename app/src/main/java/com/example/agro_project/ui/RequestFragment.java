@@ -7,7 +7,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
@@ -15,23 +14,22 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.example.agro_project.AgroViewModel;
 import com.example.agro_project.R;
 import com.example.agro_project.database.Request;
 import com.example.agro_project.databinding.FragmentRequestBinding;
 import com.example.agro_project.databinding.ItemRecyclerViewBinding;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -59,7 +57,6 @@ public class RequestFragment extends Fragment {
 
         agroViewModel = new ViewModelProvider(this).get(AgroViewModel.class);
         agroViewModel.getRequests().observe(getViewLifecycleOwner(), requests -> {
-            binding.progressBar.setVisibility(View.VISIBLE);
             adapter.setData(requests);
             if (!requests.isEmpty()) {
                 binding.noResultsText.setVisibility(View.GONE);
@@ -67,7 +64,6 @@ public class RequestFragment extends Fragment {
             } else if (!isInternetConnected()) {
                 agroViewModel.readRequest();
             }
-            binding.progressBar.setVisibility(View.GONE);
         });
 
         binding.addRequestButton.setOnClickListener(vv -> {
@@ -80,29 +76,21 @@ public class RequestFragment extends Fragment {
                 EditText weightEditText = dialogView.findViewById(R.id.edit_text_weight);
                 EditText priceEditText=dialogView.findViewById(R.id.edit_text_price);
                 EditText cityEditText=dialogView.findViewById(R.id.edit_text_city);
-
                 TextView utilWhenUnnecessaryTextView = dialogView.findViewById(R.id.util_when_unnecessary);
-                utilWhenUnnecessaryTextView.setOnClickListener(view -> {
-                    Calendar calendar = Calendar.getInstance();
-                    int year = calendar.get(Calendar.YEAR);
-                    int month = calendar.get(Calendar.MONTH);
-                    int day = calendar.get(Calendar.DAY_OF_MONTH);
 
-                    DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(), (datePicker, year1, month1, dayOfMonth) -> {
-                        Calendar selectedCalendar = Calendar.getInstance();
-                        selectedCalendar.set(Calendar.YEAR, year1);
-                        selectedCalendar.set(Calendar.MONTH, month1);
-                        selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                        selectedDate = selectedCalendar;
+                nameEditText.requestFocus();
+                Context context = requireContext();
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(nameEditText, InputMethodManager.SHOW_IMPLICIT);
 
-                        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                        String currentDateString = dateFormat.format(selectedCalendar.getTime());
-                        utilWhenUnnecessaryTextView.setText(currentDateString);
-                    }, year, month, day);
-
-                    datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
-                    datePickerDialog.show();
+                cityEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
+                    if (actionId == EditorInfo.IME_ACTION_NEXT) {
+                        openDatePicker(utilWhenUnnecessaryTextView);
+                        return true;
+                    }
+                    return false;
                 });
+                utilWhenUnnecessaryTextView.setOnClickListener(view -> openDatePicker(utilWhenUnnecessaryTextView));
 
                 builder.setView(dialogView)
                         .setTitle("Ավելացնել նոր հայտ")
@@ -153,7 +141,7 @@ public class RequestFragment extends Fragment {
     private boolean isInternetConnected() {
         ConnectivityManager connectivityManager = (ConnectivityManager) requireContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnectedOrConnecting();
     }
 
     @Override
@@ -190,6 +178,33 @@ public class RequestFragment extends Fragment {
                 return true;
             }
         });
+    }
+    @SuppressLint("ResourceAsColor")
+    private void openDatePicker(TextView utilWhenUnnecessaryTextView){
+        Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(), R.style.CustomDatePickerDialog,
+                (datePicker, year1, month1, dayOfMonth) -> {
+            Calendar selectedCalendar = Calendar.getInstance();
+            selectedCalendar.set(Calendar.YEAR, year1);
+            selectedCalendar.set(Calendar.MONTH, month1);
+            selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+            selectedDate = selectedCalendar;
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+            String currentDateString = dateFormat.format(selectedCalendar.getTime());
+            utilWhenUnnecessaryTextView.setText(currentDateString);
+        }, year, month, day);
+
+        datePickerDialog.setTitle("Ընտրեք, թե մինչև երբ է անհրաժեշտ ");
+        datePickerDialog.setButton(DatePickerDialog.BUTTON_POSITIVE, "Հաստատել", datePickerDialog);
+        datePickerDialog.setButton(DatePickerDialog.BUTTON_NEGATIVE, "Չեղարկել", datePickerDialog);
+
+        datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
+        datePickerDialog.show();
     }
 
     private class RequestAdapter extends RecyclerView.Adapter<RequestFragment.RequestAdapter.ViewHolder> {

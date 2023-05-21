@@ -11,13 +11,10 @@ import com.example.agro_project.database.AppDatabase;
 import com.example.agro_project.database.DatabaseClient;
 import com.example.agro_project.database.Offer;
 import com.example.agro_project.database.Request;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.time.LocalDate;
@@ -118,11 +115,7 @@ public class AgroViewModel extends AndroidViewModel {
 
     public void deleteRequestFromFirebase(String firebaseKey) {
         DatabaseReference requestRef = FirebaseDatabase.getInstance().getReference("requests").child(firebaseKey);
-        requestRef.removeValue().addOnSuccessListener(unused -> {
-            Toast.makeText(getApplication(), "Հայտը ջնջված է", Toast.LENGTH_SHORT).show();
-        }).addOnFailureListener(e -> {
-            Log.e("FirebaseDeleteError", "Error deleting request from Firebase", e);
-        });
+        requestRef.removeValue().addOnSuccessListener(unused -> Toast.makeText(getApplication(), "Հայտը ջնջված է", Toast.LENGTH_SHORT).show()).addOnFailureListener(e -> Log.e("FirebaseDeleteError", "Error deleting request from Firebase", e));
     }
 
     public void deleteOffer(Offer offer) {
@@ -135,11 +128,7 @@ public class AgroViewModel extends AndroidViewModel {
 
     public void deleteOfferFromFirebase(String firebaseKey) {
         DatabaseReference offerRef = FirebaseDatabase.getInstance().getReference("offers").child(firebaseKey);
-        offerRef.removeValue().addOnSuccessListener(unused -> {
-            Toast.makeText(getApplication(), "Առաջարկը ջնջված է", Toast.LENGTH_SHORT).show();
-        }).addOnFailureListener(e -> {
-            Log.e("FirebaseDeleteError", "Error deleting request from Firebase", e);
-        });
+        offerRef.removeValue().addOnSuccessListener(unused -> Toast.makeText(getApplication(), "Առաջարկը ջնջված է", Toast.LENGTH_SHORT).show()).addOnFailureListener(e -> Log.e("FirebaseDeleteError", "Error deleting request from Firebase", e));
     }
 
     private void refreshRequestList() {

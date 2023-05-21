@@ -1,19 +1,22 @@
 package com.example.agro_project;
 
-import androidx.annotation.Nullable;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes;
 import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,66 +26,83 @@ import com.google.firebase.auth.GoogleAuthProvider;
 import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
-
-    private static final int RC_SIGN_IN = 123;
     private GoogleSignInClient client;
+    private ActivityResultLauncher<Intent> signInLauncher;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        progressBar = findViewById(R.id.progress_bar);
+
         Button loginWithGoogle = findViewById(R.id.btn_login);
+
         GoogleSignInOptions options = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
                 .requestEmail()
                 .build();
 
         client = GoogleSignIn.getClient(this, options);
-        loginWithGoogle.setOnClickListener(view -> {
-            ProgressDialog progressDialog = new ProgressDialog(this);
-            progressDialog.setMessage("Մուտք...");
-            progressDialog.setCancelable(false);
-            progressDialog.show();
 
-            client.signOut()
-                    .addOnCompleteListener(task -> {
-                        Intent intent = client.getSignInIntent();
-                        startActivityForResult(intent, RC_SIGN_IN);
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        progressDialog.dismiss();
-                    });
-        });
+        signInLauncher = registerForActivityResult(new ActivityResultContracts.StartActivityForResult(),
+                result -> {
+                    if (result.getResultCode() == RESULT_OK) {
+                        Intent data = result.getData();
+                        handleSignInResult(data);
+                    } else {
+                        showProgressBar(false);
+                    }
+                });
 
+        loginWithGoogle.setOnClickListener(view -> client.signOut()
+                .addOnCompleteListener(task -> {
+                    showProgressBar(true);
+
+                    Intent intent = client.getSignInIntent();
+                    signInLauncher.launch(intent);
+                }));
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RC_SIGN_IN) {
-            Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-            try {
-                GoogleSignInAccount account = task.getResult(ApiException.class);
+    private void handleSignInResult(Intent data) {
+        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+        try {
+            showProgressBar(true);
 
-                AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
-                FirebaseAuth.getInstance().signInWithCredential(credential)
-                        .addOnCompleteListener(task1 -> {
-                            if (task1.isSuccessful()) {
-                                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                                startActivity(intent);
-                            } else {
-                                Toast.makeText(LoginActivity.this, Objects.requireNonNull(task1.getException()).getMessage(), Toast.LENGTH_SHORT).show();
-                            }
-                        });
-            } catch (ApiException e) {
-                e.printStackTrace();
+            GoogleSignInAccount account = task.getResult(ApiException.class);
+            AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+            FirebaseAuth.getInstance().signInWithCredential(credential)
+                    .addOnCompleteListener(task1 -> {
+                        showProgressBar(false);
+
+                        if (task1.isSuccessful()) {
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            Toast.makeText(LoginActivity.this, Objects.requireNonNull(task1.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                        }
+                    });
+        } catch (ApiException e) {
+            showProgressBar(false);
+
+            if (e.getStatusCode() == CommonStatusCodes.NETWORK_ERROR) {
+                Toast.makeText(LoginActivity.this, "Ցանցային խնդիր։ Խնդրում ենք ստուգել ձեր ինտերնետային կապը", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(LoginActivity.this, "Մուտքը ձախողվեց։", Toast.LENGTH_SHORT).show();
             }
         }
     }
+
+    private void showProgressBar(boolean show) {
+        if (show) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.INVISIBLE);
+        }
+    }
+
     @Override
     protected void onStart() {
         super.onStart();
@@ -90,6 +110,7 @@ public class LoginActivity extends AppCompatActivity {
         if (user != null) {
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
+            finish();
         }
     }
 }
