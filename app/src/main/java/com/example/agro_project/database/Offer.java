@@ -12,32 +12,38 @@ public class Offer {
     @ColumnInfo(name = "offerNameOfProduct")
     public String offerNameOfProduct;
 
-    @ColumnInfo(name="offerWeight")
+    @ColumnInfo(name = "offerWeight")
     public int offerWeight;
 
-    @ColumnInfo(name="offerPrice")
+    @ColumnInfo(name = "offerPrice")
     public int offerPrice;
 
-    @ColumnInfo(name="offerSendDate")
+    @ColumnInfo(name = "offerSendDate")
     public String offerSendDate;
 
     @ColumnInfo(name = "offerCity")
     public String offerCity;
 
-    @ColumnInfo(name="offerUtilWhenUnnecessaryDate")
+    @ColumnInfo(name = "offerUtilWhenUnnecessaryDate")
     public String offerUtilWhenUnnecessaryDate;
 
-    public Offer(){}
+    public Offer() {
+    }
 
-    @ColumnInfo(name="firebaseKey")
+    @ColumnInfo(name = "firebaseKey")
     public String firebaseKey;
 
-    public Offer(String offerNameOfProduct, int offerWeight, int offerPrice, String offerCity, String offerUtilWhenUnnecessaryDate,String offerSendDate ) {
+    @ColumnInfo(name = "imageUrl")
+    public String offerImageUrl;
+
+    public Offer(String offerNameOfProduct, int offerWeight, int offerPrice, String offerCity,
+                 String offerUtilWhenUnnecessaryDate, String offerSendDate, String offerImageUrl) {
         this.offerNameOfProduct = offerNameOfProduct;
         this.offerWeight = offerWeight;
         this.offerPrice = offerPrice;
         this.offerSendDate = offerSendDate;
         this.offerCity = offerCity;
         this.offerUtilWhenUnnecessaryDate = offerUtilWhenUnnecessaryDate;
+        this.offerImageUrl = offerImageUrl;
     }
 }

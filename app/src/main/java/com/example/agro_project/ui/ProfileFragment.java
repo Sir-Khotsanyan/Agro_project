@@ -42,7 +42,6 @@ public class ProfileFragment extends Fragment {
             AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
             builder.setMessage("Դուրս գալ...");
 
-
             alertDialog = builder.create();
 
             alertDialog.setOnShowListener(dialog -> {

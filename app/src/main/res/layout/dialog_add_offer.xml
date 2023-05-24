@@ -6,6 +6,16 @@
     android:layout_height="wrap_content"
     android:padding="16dp">
 
+    <ImageView
+        android:id="@+id/offer_image"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="30dp"
+        android:src="@drawable/ic_add_image"
+        tools:ignore="ContentDescription,ImageContrastCheck" />
+
     <EditText
         android:id="@+id/edit_text_offer"
         android:layout_width="match_parent"

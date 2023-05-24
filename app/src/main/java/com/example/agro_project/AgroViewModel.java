@@ -79,14 +79,14 @@ public class AgroViewModel extends AndroidViewModel {
         });
     }
 
-    public void addOffer(String name, int weight, int price, String city, String utilWhenUnnecessaryDate) {
+    public void addOffer(String name, int weight, int price, String city, String utilWhenUnnecessaryDate, String imageUrl) {
         if (!TextUtils.isEmpty(name) || weight != 0 || price != 0 || !TextUtils.isEmpty(utilWhenUnnecessaryDate)) {
             AsyncTask.execute(() -> {
                 @SuppressLint({"NewApi", "LocalSuppress"}) LocalDate currentDate = LocalDate.now();
                 @SuppressLint({"NewApi", "LocalSuppress"}) DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 @SuppressLint({"NewApi", "LocalSuppress"}) String formatDate = currentDate.format(formatter);
                 String sendDate = String.valueOf(formatDate);
-                Offer offer = new Offer(name, weight, price, city, utilWhenUnnecessaryDate, sendDate);
+                Offer offer = new Offer(name, weight, price, city, utilWhenUnnecessaryDate, sendDate, imageUrl);
                 appDatabase.offerDao().insert(offer);
                 refreshOfferList();
                 addOfferToFirebase(offer);
