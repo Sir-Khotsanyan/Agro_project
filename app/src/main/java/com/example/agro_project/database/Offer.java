@@ -36,8 +36,11 @@ public class Offer {
     @ColumnInfo(name = "imageUrl")
     public String offerImageUrl;
 
+    @ColumnInfo(name = "currentUserId")
+    public String currentUserId;
+
     public Offer(String offerNameOfProduct, int offerWeight, int offerPrice, String offerCity,
-                 String offerUtilWhenUnnecessaryDate, String offerSendDate, String offerImageUrl) {
+                 String offerUtilWhenUnnecessaryDate, String offerSendDate, String offerImageUrl, String currentUserId) {
         this.offerNameOfProduct = offerNameOfProduct;
         this.offerWeight = offerWeight;
         this.offerPrice = offerPrice;
@@ -45,5 +48,6 @@ public class Offer {
         this.offerCity = offerCity;
         this.offerUtilWhenUnnecessaryDate = offerUtilWhenUnnecessaryDate;
         this.offerImageUrl = offerImageUrl;
+        this.currentUserId = currentUserId;
     }
 }

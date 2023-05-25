@@ -30,6 +30,9 @@ import com.example.agro_project.R;
 import com.example.agro_project.database.Request;
 import com.example.agro_project.databinding.FragmentRequestBinding;
 import com.example.agro_project.databinding.ItemRecyclerViewBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -65,7 +68,6 @@ public class RequestFragment extends Fragment {
                 agroViewModel.readRequest();
             }
         });
-
         binding.addRequestButton.setOnClickListener(vv -> {
             if (isInternetConnected()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -111,11 +113,11 @@ public class RequestFragment extends Fragment {
                     if (name.isEmpty() || weightString.isEmpty()|| priceString.isEmpty()|| city.isEmpty()) {
                         Toast.makeText(requireContext(), "Խնդրում ենք լրացրեք բոլոր տվյալները", Toast.LENGTH_SHORT).show();
                     } else {
-                        binding.progressBar.setVisibility(View.VISIBLE);
                         int weight = Integer.parseInt(weightString);
                         int price=Integer.parseInt(priceString);
                         String formattedDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.getTime());
-                        agroViewModel.addRequest(name, weight,price,city,formattedDate);
+                        String currentUserId = getCurrentUserId();
+                        agroViewModel.addRequest(name, weight,price,city,formattedDate,currentUserId);
                         dialog.dismiss();
                     }
                 });
@@ -205,6 +207,14 @@ public class RequestFragment extends Fragment {
 
         datePickerDialog.getDatePicker().setMinDate(calendar.getTimeInMillis());
         datePickerDialog.show();
+    }
+
+    private String getCurrentUserId() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            return user.getUid();
+        }
+        return null;
     }
 
     private class RequestAdapter extends RecyclerView.Adapter<RequestFragment.RequestAdapter.ViewHolder> {

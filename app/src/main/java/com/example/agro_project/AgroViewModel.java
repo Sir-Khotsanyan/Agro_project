@@ -53,14 +53,14 @@ public class AgroViewModel extends AndroidViewModel {
         return offers;
     }
 
-    public void addRequest(String name, int weight, int price, String city, String utilWhenUnnecessaryDate) {
+    public void addRequest(String name, int weight, int price, String city, String utilWhenUnnecessaryDate, String currentUserId) {
         if (!TextUtils.isEmpty(name) || weight != 0 || price != 0 || !TextUtils.isEmpty(utilWhenUnnecessaryDate)) {
             AsyncTask.execute(() -> {
                 @SuppressLint({"NewApi", "LocalSuppress"}) LocalDate currentDate = LocalDate.now();
                 @SuppressLint({"NewApi", "LocalSuppress"}) DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 @SuppressLint({"NewApi", "LocalSuppress"}) String formatDate = currentDate.format(formatter);
                 String sendDate = String.valueOf(formatDate);
-                Request request = new Request(name, weight, price, city, utilWhenUnnecessaryDate, sendDate);
+                Request request = new Request(name, weight, price, city, utilWhenUnnecessaryDate, sendDate, currentUserId);
                 appDatabase.requestDao().insert(request);
                 refreshRequestList();
                 addRequestToFirebase(request);
@@ -79,14 +79,14 @@ public class AgroViewModel extends AndroidViewModel {
         });
     }
 
-    public void addOffer(String name, int weight, int price, String city, String utilWhenUnnecessaryDate, String imageUrl) {
+    public void addOffer(String name, int weight, int price, String city, String utilWhenUnnecessaryDate, String imageUrl, String currentUserId) {
         if (!TextUtils.isEmpty(name) || weight != 0 || price != 0 || !TextUtils.isEmpty(utilWhenUnnecessaryDate)) {
             AsyncTask.execute(() -> {
                 @SuppressLint({"NewApi", "LocalSuppress"}) LocalDate currentDate = LocalDate.now();
                 @SuppressLint({"NewApi", "LocalSuppress"}) DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
                 @SuppressLint({"NewApi", "LocalSuppress"}) String formatDate = currentDate.format(formatter);
                 String sendDate = String.valueOf(formatDate);
-                Offer offer = new Offer(name, weight, price, city, utilWhenUnnecessaryDate, sendDate, imageUrl);
+                Offer offer = new Offer(name, weight, price, city, utilWhenUnnecessaryDate, sendDate, imageUrl, currentUserId);
                 appDatabase.offerDao().insert(offer);
                 refreshOfferList();
                 addOfferToFirebase(offer);

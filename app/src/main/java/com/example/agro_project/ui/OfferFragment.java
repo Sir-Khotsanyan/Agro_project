@@ -38,6 +38,8 @@ import com.example.agro_project.R;
 import com.example.agro_project.database.Offer;
 import com.example.agro_project.databinding.FragmentOfferBinding;
 import com.example.agro_project.databinding.ItemRecyclerViewBinding;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
@@ -139,7 +141,8 @@ public class OfferFragment extends Fragment {
                         int weight = Integer.parseInt(weightString);
                         int price = Integer.parseInt(priceString);
                         String formattedDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.getTime());
-                        agroViewModel.addOffer(name, weight, price, city, formattedDate,offerImageUrl);
+                        String currentUserId = getCurrentUserId();
+                        agroViewModel.addOffer(name, weight, price, city, formattedDate,offerImageUrl,currentUserId);
                         dialog.dismiss();
                     }
                 });
@@ -287,6 +290,13 @@ public class OfferFragment extends Fragment {
                     }
                     alertDialog.dismiss();
                 });
+    }
+    private String getCurrentUserId() {
+        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+        if (user != null) {
+            return user.getUid();
+        }
+        return null;
     }
     private class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> {
         private List<Offer> offers;
