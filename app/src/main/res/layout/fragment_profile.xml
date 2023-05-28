@@ -22,26 +22,18 @@
         app:layout_constraintTop_toBottomOf="@+id/set_email"
         tools:ignore="MissingConstraints,TextContrastCheck,UnknownId" />
 
-    <HorizontalScrollView
-        android:layout_width="match_parent"
+    <TextView
+        android:id="@+id/profile_username"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/set_email"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="150dp"
+        android:textAlignment="center"
+        android:textColor="@color/sheen_green"
+        android:textSize="60sp"
+        android:textStyle="bold"
+        app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/profile_username"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="150dp"
-            android:textAlignment="center"
-            android:textColor="@color/sheen_green"
-            android:textSize="60sp"
-            android:textStyle="bold"
-            tools:ignore="MissingConstraints" />
-
-    </HorizontalScrollView>
+        tools:ignore="MissingConstraints" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/set_email"
@@ -49,38 +41,30 @@
         android:layout_height="wrap_content"
         android:background="@drawable/rounded_edittext"
         android:padding="8dp"
-        tools:ignore="MissingConstraints"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            tools:layout_editor_absoluteX="27dp"
-            tools:layout_editor_absoluteY="1dp">
-
-            <TextView
-                android:id="@+id/profile_email"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="100dp"
-                android:layout_marginTop="10dp"
-                android:text="siranushkhotsanyan@gmail.com"
-                android:textSize="20sp"
-                tools:ignore="MissingConstraints" />
-
-        </HorizontalScrollView>
+        tools:ignore="MissingConstraints">
 
         <TextView
+            android:id="@+id/profile_email_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/email"
             android:textColor="@color/sheen_green"
             android:textSize="20sp"
             app:layout_constraintEnd_toStartOf="@+id/profile_email"
-            tools:ignore="MissingConstraints,NotSibling,TextContrastCheck,VisualLintOverlap"
-            tools:layout_editor_absoluteY="10dp" />
+            tools:ignore="MissingConstraints,NotSibling,TextContrastCheck,VisualLintOverlap,VisualLintBounds" />
+
+        <TextView
+            android:id="@+id/profile_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@+id/profile_email_title"
+            tools:ignore="MissingConstraints" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

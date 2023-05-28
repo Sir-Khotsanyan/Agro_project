@@ -30,20 +30,24 @@ public class Request {
 
     @ColumnInfo(name="firebaseKey")
     public String firebaseKey;
-    @ColumnInfo(name = "currentUserId")
-    public String currentUserId;
+    @ColumnInfo(name = "currentUserName")
+    public String currentUserName;
+
+    @ColumnInfo(name = "currentUserEmail")
+    public String currentUserEmail;
 
     public Request() {}
 
-    public Request(String requestNameOfProduct, int requestWeight,int requestPrice,
-                   String requestCity ,String requestUtilWhenUnnecessaryDate,String requestSendDate,String currentUserId) {
+    public Request(String requestNameOfProduct, int requestWeight,int requestPrice, String requestCity ,
+                   String requestUtilWhenUnnecessaryDate,String requestSendDate,String currentUserName, String currentUserEmail) {
         this.requestNameOfProduct = requestNameOfProduct;
         this.requestWeight = requestWeight;
         this.requestPrice=requestPrice;
         this.requestCity=requestCity;
         this.requestUtilWhenUnnecessaryDate=requestUtilWhenUnnecessaryDate;
         this.requestSendDate=requestSendDate;
-        this.currentUserId=currentUserId;
+        this.currentUserName=currentUserName;
+        this.currentUserEmail=currentUserEmail;
     }
 }
 

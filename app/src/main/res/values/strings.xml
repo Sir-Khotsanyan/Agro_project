@@ -16,4 +16,10 @@
     <string name="util_when_unnecessary">Միչև երբ է այն անհրաժեշտ</string>
     <string name="amd">դրամ</string>
     <string name="city">Քաղաք</string>
+    <string name="name_">Անվանում `</string>
+    <string name="weight_">Քաշը `</string>
+    <string name="price_">Գինը 1կգ-ի համար `</string>
+    <string name="util_when_unnecessary_">Անհրաժեշտ է մինչև `</string>
+    <string name="city_">Քաղաք ` </string>
+
 </resources>

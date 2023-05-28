@@ -27,20 +27,23 @@ public class Offer {
     @ColumnInfo(name = "offerUtilWhenUnnecessaryDate")
     public String offerUtilWhenUnnecessaryDate;
 
-    public Offer() {
-    }
-
     @ColumnInfo(name = "firebaseKey")
     public String firebaseKey;
 
     @ColumnInfo(name = "imageUrl")
     public String offerImageUrl;
 
-    @ColumnInfo(name = "currentUserId")
-    public String currentUserId;
+    @ColumnInfo(name = "currentUserName")
+    public String currentUserName;
+
+    @ColumnInfo(name = "currentUserEmail")
+    public String currentUserEmail;
+
+    public Offer() {
+    }
 
     public Offer(String offerNameOfProduct, int offerWeight, int offerPrice, String offerCity,
-                 String offerUtilWhenUnnecessaryDate, String offerSendDate, String offerImageUrl, String currentUserId) {
+                 String offerUtilWhenUnnecessaryDate, String offerSendDate, String offerImageUrl, String currentUserName, String currentUserEmail) {
         this.offerNameOfProduct = offerNameOfProduct;
         this.offerWeight = offerWeight;
         this.offerPrice = offerPrice;
@@ -48,6 +51,7 @@ public class Offer {
         this.offerCity = offerCity;
         this.offerUtilWhenUnnecessaryDate = offerUtilWhenUnnecessaryDate;
         this.offerImageUrl = offerImageUrl;
-        this.currentUserId = currentUserId;
+        this.currentUserName=currentUserName;
+        this.currentUserEmail=currentUserEmail;
     }
 }

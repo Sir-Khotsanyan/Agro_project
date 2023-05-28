@@ -16,9 +16,17 @@
         android:background="@color/white"
         android:src="@drawable/baseline_delete_button"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/product_weight"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="ContentDescription,SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
+    <TextView
+        android:id="@+id/user_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@+id/name_of_product"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/name_of_product"
@@ -29,6 +37,7 @@
         android:textStyle="bold"
         app:layout_constraintRight_toLeftOf="@id/product_weight"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/user_name"
         tools:ignore="MissingConstraints,RtlHardcoded,SpUsage" />
 
     <TextView
@@ -40,7 +49,7 @@
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@+id/name_of_product"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/user_name" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -51,7 +60,7 @@
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintStart_toEndOf="@+id/product_weight"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/user_name" />
 
     <TextView
         android:id="@+id/product_price"
@@ -77,8 +86,8 @@
         android:id="@+id/city"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="20sp"
         android:layout_marginTop="15dp"
+        android:textSize="20sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

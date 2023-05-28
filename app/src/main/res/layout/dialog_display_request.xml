@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="20dp">
+
+    <TextView
+        android:id="@+id/request_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textColor="@color/sheen_green"
+        android:textSize="23sp"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/request_user_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="19sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/request_username" />
+
+    <TextView
+        android:id="@+id/request_name_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:padding="5dp"
+        android:text="@string/name_"
+        android:textColor="@color/sheen_green"
+        android:textSize="17sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/request_user_email"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/request_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="20dp"
+        android:padding="5dp"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        app:layout_constraintStart_toEndOf="@id/request_name_title"
+        app:layout_constraintTop_toBottomOf="@+id/request_user_email" />
+
+    <TextView
+        android:id="@+id/request_weight_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="@string/weight_"
+        android:textColor="@color/sheen_green"
+        android:textSize="17sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/request_name_title"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/request_weight"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:padding="5dp"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        app:layout_constraintStart_toEndOf="@id/request_weight_title"
+        app:layout_constraintTop_toBottomOf="@+id/request_name_title" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:text="@string/kilogram"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        app:layout_constraintStart_toEndOf="@id/request_weight"
+        app:layout_constraintTop_toBottomOf="@+id/request_name_title" />
+
+    <TextView
+        android:id="@+id/request_price_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="@string/price_"
+        android:textColor="@color/sheen_green"
+        android:textSize="17sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/request_weight_title"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/request_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:padding="5dp"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        app:layout_constraintStart_toEndOf="@id/request_price_title"
+        app:layout_constraintTop_toBottomOf="@+id/request_weight_title" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingTop="5dp"
+        android:text="@string/amd"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        app:layout_constraintStart_toEndOf="@id/request_price"
+        app:layout_constraintTop_toBottomOf="@+id/request_weight_title" />
+
+    <TextView
+        android:id="@+id/request_util_when_unnecessary_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="@string/util_when_unnecessary_"
+        android:textColor="@color/sheen_green"
+        android:textSize="17sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/request_price_title"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/request_util_when_unnecessary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:padding="5dp"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        app:layout_constraintStart_toEndOf="@id/request_util_when_unnecessary_title"
+        app:layout_constraintTop_toBottomOf="@+id/request_price_title" />
+
+    <TextView
+        android:id="@+id/request_city_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:text="@string/city_"
+        android:textColor="@color/sheen_green"
+        android:textSize="17sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/request_util_when_unnecessary_title"
+        tools:ignore="TextContrastCheck" />
+
+    <TextView
+        android:id="@+id/request_city"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:padding="5dp"
+        android:textColor="@color/black"
+        android:textSize="17sp"
+        app:layout_constraintStart_toEndOf="@id/request_city_title"
+        app:layout_constraintTop_toBottomOf="@+id/request_util_when_unnecessary_title" />
+
+    <TextView
+        android:id="@+id/request_send_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="5dp"
+        android:padding="5dp"
+        android:textSize="17sp"
+        app:layout_constraintBottom_toTopOf="@+id/request_username"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

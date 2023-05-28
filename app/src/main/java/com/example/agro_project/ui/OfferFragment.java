@@ -41,6 +41,8 @@ import com.example.agro_project.databinding.ItemRecyclerViewBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
+import com.squareup.picasso.Picasso;
+
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -141,8 +143,10 @@ public class OfferFragment extends Fragment {
                         int weight = Integer.parseInt(weightString);
                         int price = Integer.parseInt(priceString);
                         String formattedDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.getTime());
-                        String currentUserId = getCurrentUserId();
-                        agroViewModel.addOffer(name, weight, price, city, formattedDate,offerImageUrl,currentUserId);
+                        FirebaseUser firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
+                        String currentUserName= Objects.requireNonNull(firebaseUser).getDisplayName();
+                        String currentUserEmail=firebaseUser.getEmail();
+                        agroViewModel.addOffer(name, weight, price, city, formattedDate,offerImageUrl,currentUserName, currentUserEmail);
                         dialog.dismiss();
                     }
                 });
@@ -291,16 +295,11 @@ public class OfferFragment extends Fragment {
                     alertDialog.dismiss();
                 });
     }
-    private String getCurrentUserId() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            return user.getUid();
-        }
-        return null;
-    }
+
     private class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> {
         private List<Offer> offers;
 
+        @SuppressLint("NotifyDataSetChanged")
         public void setData(List<Offer> offers) {
             this.offers = offers;
             notifyDataSetChanged();
@@ -316,11 +315,17 @@ public class OfferFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            final Offer offer = offers.get(position);
+
             holder.binding.nameOfProduct.setText(offers.get(position).offerNameOfProduct);
             holder.binding.productWeight.setText(String.valueOf(offers.get(position).offerWeight));
             holder.binding.productPrice.setText(String.valueOf(offers.get(position).offerPrice));
             holder.binding.city.setText(String.valueOf(offers.get(position).offerCity));
             holder.binding.sendDate.setText(offers.get(position).offerSendDate);
+            holder.binding.userName.setText(offers.get(position).currentUserName);
+
+            holder.itemView.setOnClickListener(v -> showItemDetails(holder.itemView, offer));
+
         }
 
         @Override
@@ -328,7 +333,41 @@ public class OfferFragment extends Fragment {
             return offers != null ? offers.size() : 0;
         }
 
-        class ViewHolder extends RecyclerView.ViewHolder {
+        private void showItemDetails(View itemView, Offer offer) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
+            LayoutInflater layoutInflater = requireActivity().getLayoutInflater();
+            View dialogView = layoutInflater.inflate(R.layout.dialog_display_offer, null);
+
+            TextView offerName = dialogView.findViewById(R.id.offer_name);
+            TextView offerWeight = dialogView.findViewById(R.id.offer_weight);
+            TextView offerPrice = dialogView.findViewById(R.id.offer_price);
+            TextView offerUtilWhenUnnecessaryTitle = dialogView.findViewById(R.id.offer_util_when_unnecessary);
+            TextView offerCity = dialogView.findViewById(R.id.offer_city);
+            TextView offerSendDate = dialogView.findViewById(R.id.offer_send_date);
+            TextView offerUsename=dialogView.findViewById(R.id.offer_username);
+            TextView offerUserEmail=dialogView.findViewById(R.id.offer_user_email);
+            ImageView offerImage=dialogView.findViewById(R.id.offer_image);
+
+            offerName.setText(offer.offerNameOfProduct);
+            offerWeight.setText(String.valueOf(offer.offerWeight));
+            offerPrice.setText(String.valueOf(offer.offerPrice));
+            offerUtilWhenUnnecessaryTitle.setText(offer.offerUtilWhenUnnecessaryDate);
+            offerCity.setText(offer.offerCity);
+            offerSendDate.setText(offer.offerSendDate);
+            offerUsename.setText(offer.currentUserName);
+            offerUserEmail.setText(offer.currentUserEmail);
+            Picasso.get().load(offer.offerImageUrl).into(offerImage);
+
+            builder.setView(dialogView)
+                    .setNegativeButton("Փակել", (dialog, which) -> {
+                        //Do nothing
+                    });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
+        }
+
+            class ViewHolder extends RecyclerView.ViewHolder {
             ItemRecyclerViewBinding binding;
 
             public ViewHolder(@NonNull ItemRecyclerViewBinding binding) {

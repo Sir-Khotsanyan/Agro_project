@@ -38,6 +38,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class RequestFragment extends Fragment {
     private FragmentRequestBinding binding;
@@ -76,8 +77,8 @@ public class RequestFragment extends Fragment {
 
                 EditText nameEditText = dialogView.findViewById(R.id.edit_text_request);
                 EditText weightEditText = dialogView.findViewById(R.id.edit_text_weight);
-                EditText priceEditText=dialogView.findViewById(R.id.edit_text_price);
-                EditText cityEditText=dialogView.findViewById(R.id.edit_text_city);
+                EditText priceEditText = dialogView.findViewById(R.id.edit_text_price);
+                EditText cityEditText = dialogView.findViewById(R.id.edit_text_city);
                 TextView utilWhenUnnecessaryTextView = dialogView.findViewById(R.id.util_when_unnecessary);
 
                 nameEditText.requestFocus();
@@ -107,17 +108,19 @@ public class RequestFragment extends Fragment {
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(buttonView -> {
                     String name = nameEditText.getText().toString().trim();
                     String weightString = weightEditText.getText().toString().trim();
-                    String priceString=priceEditText.getText().toString().trim();
-                    String city=cityEditText.getText().toString().trim();
+                    String priceString = priceEditText.getText().toString().trim();
+                    String city = cityEditText.getText().toString().trim();
 
-                    if (name.isEmpty() || weightString.isEmpty()|| priceString.isEmpty()|| city.isEmpty()) {
+                    if (name.isEmpty() || weightString.isEmpty() || priceString.isEmpty() || city.isEmpty()) {
                         Toast.makeText(requireContext(), "Խնդրում ենք լրացրեք բոլոր տվյալները", Toast.LENGTH_SHORT).show();
                     } else {
                         int weight = Integer.parseInt(weightString);
-                        int price=Integer.parseInt(priceString);
+                        int price = Integer.parseInt(priceString);
                         String formattedDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.getTime());
-                        String currentUserId = getCurrentUserId();
-                        agroViewModel.addRequest(name, weight,price,city,formattedDate,currentUserId);
+                        FirebaseUser firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
+                        String currentUserName= Objects.requireNonNull(firebaseUser).getDisplayName();
+                        String currentUserEmail=firebaseUser.getEmail();
+                        agroViewModel.addRequest(name, weight, price, city, formattedDate, currentUserName,currentUserEmail);
                         dialog.dismiss();
                     }
                 });
@@ -181,8 +184,9 @@ public class RequestFragment extends Fragment {
             }
         });
     }
+
     @SuppressLint("ResourceAsColor")
-    private void openDatePicker(TextView utilWhenUnnecessaryTextView){
+    private void openDatePicker(TextView utilWhenUnnecessaryTextView) {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
@@ -190,16 +194,16 @@ public class RequestFragment extends Fragment {
 
         DatePickerDialog datePickerDialog = new DatePickerDialog(requireActivity(), R.style.CustomDatePickerDialog,
                 (datePicker, year1, month1, dayOfMonth) -> {
-            Calendar selectedCalendar = Calendar.getInstance();
-            selectedCalendar.set(Calendar.YEAR, year1);
-            selectedCalendar.set(Calendar.MONTH, month1);
-            selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-            selectedDate = selectedCalendar;
+                    Calendar selectedCalendar = Calendar.getInstance();
+                    selectedCalendar.set(Calendar.YEAR, year1);
+                    selectedCalendar.set(Calendar.MONTH, month1);
+                    selectedCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                    selectedDate = selectedCalendar;
 
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-            String currentDateString = dateFormat.format(selectedCalendar.getTime());
-            utilWhenUnnecessaryTextView.setText(currentDateString);
-        }, year, month, day);
+                    SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
+                    String currentDateString = dateFormat.format(selectedCalendar.getTime());
+                    utilWhenUnnecessaryTextView.setText(currentDateString);
+                }, year, month, day);
 
         datePickerDialog.setTitle("Ընտրեք, թե մինչև երբ է անհրաժեշտ ");
         datePickerDialog.setButton(DatePickerDialog.BUTTON_POSITIVE, "Հաստատել", datePickerDialog);
@@ -209,13 +213,6 @@ public class RequestFragment extends Fragment {
         datePickerDialog.show();
     }
 
-    private String getCurrentUserId() {
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user != null) {
-            return user.getUid();
-        }
-        return null;
-    }
 
     private class RequestAdapter extends RecyclerView.Adapter<RequestFragment.RequestAdapter.ViewHolder> {
         private List<Request> requests;
@@ -236,16 +233,54 @@ public class RequestFragment extends Fragment {
 
         @Override
         public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+            final Request request = requests.get(position);
+
             holder.binding.nameOfProduct.setText(requests.get(position).requestNameOfProduct);
             holder.binding.productWeight.setText(String.valueOf(requests.get(position).requestWeight));
             holder.binding.productPrice.setText(String.valueOf(requests.get(position).requestPrice));
             holder.binding.city.setText(String.valueOf(requests.get(position).requestCity));
             holder.binding.sendDate.setText(requests.get(position).requestSendDate);
+            holder.binding.userName.setText(requests.get(position).currentUserName);
+
+            holder.itemView.setOnClickListener(v -> showItemDetails(holder.itemView, request));
+
         }
 
         @Override
         public int getItemCount() {
             return requests != null ? requests.size() : 0;
+        }
+
+        private void showItemDetails(View itemView, Request request) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
+            LayoutInflater layoutInflater = requireActivity().getLayoutInflater();
+            View dialogView = layoutInflater.inflate(R.layout.dialog_display_request, null);
+
+            TextView requestName = dialogView.findViewById(R.id.request_name);
+            TextView requestWeight = dialogView.findViewById(R.id.request_weight);
+            TextView requestPrice = dialogView.findViewById(R.id.request_price);
+            TextView requestUtilWhenUnnecessaryTitle = dialogView.findViewById(R.id.request_util_when_unnecessary);
+            TextView requestCity = dialogView.findViewById(R.id.request_city);
+            TextView requestSendDate = dialogView.findViewById(R.id.request_send_date);
+            TextView requestUsename=dialogView.findViewById(R.id.request_username);
+            TextView requestUserEmail=dialogView.findViewById(R.id.request_user_email);
+
+            requestName.setText(request.requestNameOfProduct);
+            requestWeight.setText(String.valueOf(request.requestWeight));
+            requestPrice.setText(String.valueOf(request.requestPrice));
+            requestUtilWhenUnnecessaryTitle.setText(request.requestUtilWhenUnnecessaryDate);
+            requestCity.setText(request.requestCity);
+            requestSendDate.setText(request.requestSendDate);
+            requestUsename.setText(request.currentUserName);
+            requestUserEmail.setText(request.currentUserEmail);
+
+            builder.setView(dialogView)
+                    .setNegativeButton("Փակել", (dialog, which) -> {
+                        //Do nothing
+                    });
+
+            AlertDialog dialog = builder.create();
+            dialog.show();
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {
