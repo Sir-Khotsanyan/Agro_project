@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -27,10 +29,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.example.agro_project.AgroViewModel;
@@ -41,6 +45,7 @@ import com.example.agro_project.databinding.ItemRecyclerViewBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
@@ -76,15 +81,19 @@ public class OfferFragment extends Fragment {
         binding.itemListOffer.setAdapter(adapter);
 
         agroViewModel = new ViewModelProvider(this).get(AgroViewModel.class);
-        agroViewModel.getOffers().observe(getViewLifecycleOwner(), offers -> {
+        if (!isInternetConnected()) {
+            showNoInternetDialog();
+        } else {
             binding.progressBar.setVisibility(View.VISIBLE);
-            adapter.setData(offers);
-            if (!offers.isEmpty()) {
-                binding.noResultsText.setVisibility(View.GONE);
-                binding.itemListOffer.scrollToPosition(offers.size() - 1);
-            }
-            binding.progressBar.setVisibility(View.GONE);
-        });
+            agroViewModel.getOffers().observe(getViewLifecycleOwner(), offers -> {
+                adapter.setData(offers);
+                if (!offers.isEmpty()) {
+                    binding.noResultsText.setVisibility(View.GONE);
+                    binding.itemListOffer.scrollToPosition(offers.size() - 1);
+                }
+                binding.progressBar.setVisibility(View.GONE);
+            });
+        }
 
         binding.addOfferButton.setOnClickListener(vv -> {
             if (isInternetConnected()) {
@@ -98,11 +107,7 @@ public class OfferFragment extends Fragment {
                 EditText cityEditText = dialogView.findViewById(R.id.edit_text_city);
                 TextView utilWhenUnnecessaryTextView = dialogView.findViewById(R.id.util_when_unnecessary);
                 imageView = dialogView.findViewById(R.id.offer_image);
-
                 nameEditText.requestFocus();
-                Context context = requireContext();
-                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(nameEditText, InputMethodManager.SHOW_IMPLICIT);
 
                 imageView.setOnClickListener(view -> {
                     imagePickerLauncher.launch(createImagePickerIntent());
@@ -127,6 +132,12 @@ public class OfferFragment extends Fragment {
                         });
 
                 AlertDialog dialog = builder.create();
+
+                dialog.setOnShowListener(dialogInterface -> {
+                    nameEditText.requestFocus();
+                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                });
+
                 dialog.show();
 
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(buttonView -> {
@@ -139,7 +150,6 @@ public class OfferFragment extends Fragment {
                     if (name.isEmpty() || weightString.isEmpty() || priceString.isEmpty() || city.isEmpty()) {
                         Toast.makeText(requireContext(), "Խնդրում ենք լրացրեք բոլոր տվյալները", Toast.LENGTH_SHORT).show();
                     } else {
-                        binding.progressBar.setVisibility(View.VISIBLE);
                         int weight = Integer.parseInt(weightString);
                         int price = Integer.parseInt(priceString);
                         String formattedDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.getTime());
@@ -179,9 +189,9 @@ public class OfferFragment extends Fragment {
 
     private void refreshData() {
         if (isInternetConnected()) {
-            agroViewModel.readRequest();
+            agroViewModel.readOffer();
         } else {
-            Toast.makeText(requireContext(), "Ցանցին միացում չկա", Toast.LENGTH_SHORT).show();
+            showNoInternetDialog();
         }
         swipeRefreshLayout.setRefreshing(false);
     }
@@ -244,6 +254,9 @@ public class OfferFragment extends Fragment {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                     String currentDateString = dateFormat.format(selectedCalendar.getTime());
                     utilWhenUnnecessaryTextView.setText(currentDateString);
+
+                    InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(utilWhenUnnecessaryTextView.getWindowToken(), 0);
                 }, year, month, day);
 
         datePickerDialog.setTitle("Նշեք պիտանելիության ժամկետը");
@@ -294,6 +307,20 @@ public class OfferFragment extends Fragment {
                     }
                     alertDialog.dismiss();
                 });
+    }
+    private void showNoInternetDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Ցանցին միացում չկա")
+                .setMessage("Խնդրում ենք ստուգել ձեր կապը համացանցին և նորից փորձել։")
+                .setPositiveButton("Նորից փորձել", (dialog, which) -> {
+                    if (isInternetConnected()) {
+                        dialog.dismiss();
+                    } else {
+                        showNoInternetDialog();
+                    }
+                })
+                .setCancelable(false)
+                .show();
     }
 
     private class OfferAdapter extends RecyclerView.Adapter<OfferAdapter.ViewHolder> {
@@ -346,7 +373,8 @@ public class OfferFragment extends Fragment {
             TextView offerSendDate = dialogView.findViewById(R.id.offer_send_date);
             TextView offerUsename=dialogView.findViewById(R.id.offer_username);
             TextView offerUserEmail=dialogView.findViewById(R.id.offer_user_email);
-            ImageView offerImage=dialogView.findViewById(R.id.offer_image);
+            ImageView offerImage = dialogView.findViewById(R.id.offer_image);
+            ProgressBar progressBar=dialogView.findViewById(R.id.progress_bar);
 
             offerName.setText(offer.offerNameOfProduct);
             offerWeight.setText(String.valueOf(offer.offerWeight));
@@ -356,13 +384,37 @@ public class OfferFragment extends Fragment {
             offerSendDate.setText(offer.offerSendDate);
             offerUsename.setText(offer.currentUserName);
             offerUserEmail.setText(offer.currentUserEmail);
-            Picasso.get().load(offer.offerImageUrl).into(offerImage);
+
+            if (offer.offerImageUrl == null || offer.offerImageUrl.isEmpty()) {
+                offerImage.setVisibility(View.GONE);
+                progressBar.setVisibility(View.GONE);
+            } else {
+                offerImage.setVisibility(View.VISIBLE);
+                progressBar.setVisibility(View.VISIBLE);
+                Picasso.get().load(offer.offerImageUrl).into(offerImage, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        progressBar.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onError(Exception e) {
+                        progressBar.setVisibility(View.GONE);
+                    }
+                });
+            }
 
             builder.setView(dialogView)
                     .setNegativeButton("Փակել", (dialog, which) -> {
                         //Do nothing
                     });
 
+            offerUserEmail.setOnLongClickListener(v -> {
+                        ClipboardManager clipboard = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                        ClipData clip = ClipData.newPlainText("User Email", offer.currentUserEmail);
+                        clipboard.setPrimaryClip(clip);
+                        return true;
+                    });
             AlertDialog dialog = builder.create();
             dialog.show();
         }

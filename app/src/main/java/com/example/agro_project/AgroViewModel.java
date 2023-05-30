@@ -158,7 +158,6 @@ public class AgroViewModel extends AndroidViewModel {
     }
 
     public void readRequest() {
-
         DatabaseReference requestsRef = FirebaseDatabase.getInstance().getReference("requests");
         requestsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

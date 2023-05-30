@@ -3,6 +3,8 @@ package com.example.agro_project.ui;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -20,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -60,15 +63,20 @@ public class RequestFragment extends Fragment {
         binding.itemListRequest.setAdapter(adapter);
 
         agroViewModel = new ViewModelProvider(this).get(AgroViewModel.class);
-        agroViewModel.getRequests().observe(getViewLifecycleOwner(), requests -> {
-            adapter.setData(requests);
-            if (!requests.isEmpty()) {
-                binding.noResultsText.setVisibility(View.GONE);
-                binding.itemListRequest.scrollToPosition(requests.size() - 1);
-            } else if (!isInternetConnected()) {
-                agroViewModel.readRequest();
-            }
-        });
+
+        if (!isInternetConnected()) {
+            showNoInternetDialog();
+        } else {
+            binding.progressBar.setVisibility(View.VISIBLE);
+            agroViewModel.getRequests().observe(getViewLifecycleOwner(), requests -> {
+                adapter.setData(requests);
+                if (!requests.isEmpty()) {
+                    binding.noResultsText.setVisibility(View.GONE);
+                    binding.itemListRequest.scrollToPosition(requests.size() - 1);
+                }
+                binding.progressBar.setVisibility(View.GONE);
+            });
+        }
         binding.addRequestButton.setOnClickListener(vv -> {
             if (isInternetConnected()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
@@ -80,11 +88,6 @@ public class RequestFragment extends Fragment {
                 EditText priceEditText = dialogView.findViewById(R.id.edit_text_price);
                 EditText cityEditText = dialogView.findViewById(R.id.edit_text_city);
                 TextView utilWhenUnnecessaryTextView = dialogView.findViewById(R.id.util_when_unnecessary);
-
-                nameEditText.requestFocus();
-                Context context = requireContext();
-                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(nameEditText, InputMethodManager.SHOW_IMPLICIT);
 
                 cityEditText.setOnEditorActionListener((textView, actionId, keyEvent) -> {
                     if (actionId == EditorInfo.IME_ACTION_NEXT) {
@@ -103,8 +106,13 @@ public class RequestFragment extends Fragment {
                         });
 
                 AlertDialog dialog = builder.create();
-                dialog.show();
 
+                dialog.setOnShowListener(dialogInterface -> {
+                    nameEditText.requestFocus();
+                    dialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                });
+
+                dialog.show();
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(buttonView -> {
                     String name = nameEditText.getText().toString().trim();
                     String weightString = weightEditText.getText().toString().trim();
@@ -124,9 +132,8 @@ public class RequestFragment extends Fragment {
                         dialog.dismiss();
                     }
                 });
-            } else {
-                Toast.makeText(requireContext(), "Ցանցին միացում չկա", Toast.LENGTH_SHORT).show();
             }
+
         });
 
         agroViewModel.readRequest();
@@ -138,7 +145,7 @@ public class RequestFragment extends Fragment {
         if (isInternetConnected()) {
             agroViewModel.readRequest();
         } else {
-            Toast.makeText(requireContext(), "Ցանցին միացում չկա", Toast.LENGTH_SHORT).show();
+            showNoInternetDialog();
         }
         swipeRefreshLayout.setRefreshing(false);
     }
@@ -203,6 +210,9 @@ public class RequestFragment extends Fragment {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                     String currentDateString = dateFormat.format(selectedCalendar.getTime());
                     utilWhenUnnecessaryTextView.setText(currentDateString);
+
+                    InputMethodManager imm = (InputMethodManager) requireContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(utilWhenUnnecessaryTextView.getWindowToken(), 0);
                 }, year, month, day);
 
         datePickerDialog.setTitle("Ընտրեք, թե մինչև երբ է անհրաժեշտ ");
@@ -213,6 +223,20 @@ public class RequestFragment extends Fragment {
         datePickerDialog.show();
     }
 
+    private void showNoInternetDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
+        builder.setTitle("Ցանցին միացում չկա")
+                .setMessage("Խնդրում ենք ստուգել ձեր կապը համացանցին և նորից փորձել։")
+                .setPositiveButton("Նորից փորձել", (dialog, which) -> {
+                    if (isInternetConnected()) {
+                        dialog.dismiss();
+                    } else {
+                        showNoInternetDialog();
+                    }
+                })
+                .setCancelable(false)
+                .show();
+    }
 
     private class RequestAdapter extends RecyclerView.Adapter<RequestFragment.RequestAdapter.ViewHolder> {
         private List<Request> requests;
@@ -278,6 +302,13 @@ public class RequestFragment extends Fragment {
                     .setNegativeButton("Փակել", (dialog, which) -> {
                         //Do nothing
                     });
+
+            requestUserEmail.setOnLongClickListener(v -> {
+                ClipboardManager clipboard = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("User Email", request.currentUserEmail);
+                clipboard.setPrimaryClip(clip);
+                return true;
+            });
 
             AlertDialog dialog = builder.create();
             dialog.show();
