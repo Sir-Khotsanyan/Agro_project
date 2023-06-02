@@ -19,7 +19,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/set_email"
+        app:layout_constraintTop_toBottomOf="@+id/current_offers"
         tools:ignore="MissingConstraints,TextContrastCheck,UnknownId" />
 
     <TextView
@@ -29,42 +29,82 @@
         android:layout_marginTop="150dp"
         android:textAlignment="center"
         android:textColor="@color/sheen_green"
-        android:textSize="60sp"
+        android:textSize="45sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         tools:ignore="MissingConstraints" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/set_email"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/rounded_edittext"
-        android:padding="8dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="MissingConstraints">
-
-        <TextView
-            android:id="@+id/profile_email_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/email"
-            android:textColor="@color/sheen_green"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/profile_email"
-            tools:ignore="MissingConstraints,NotSibling,TextContrastCheck,VisualLintOverlap,VisualLintBounds" />
-
         <TextView
             android:id="@+id/profile_email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:textSize="20sp"
-            app:layout_constraintStart_toEndOf="@+id/profile_email_title"
+            app:layout_constraintTop_toBottomOf="@+id/profile_username"
             tools:ignore="MissingConstraints" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/current_requests"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="8dp"
+        android:background="@drawable/rounded_edittext"
+        android:layout_marginTop="50dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/profile_email">
+
+        <TextView
+            android:id="@+id/current_user_requests"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/current_user_requests"
+            android:textColor="@color/sheen_green"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/next_requests"
+            tools:ignore="TextContrastCheck" />
+
+        <ImageView
+            android:id="@+id/next_requests"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/baseline_navigate_next_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/current_user_requests"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/current_offers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/rounded_edittext"
+        android:padding="8dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/current_requests">
+
+        <TextView
+            android:id="@+id/current_user_offers"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/current_user_offers"
+            android:textColor="@color/sheen_green"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/next_offer"
+            tools:ignore="TextContrastCheck" />
+
+        <ImageView
+            android:id="@+id/next_offer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:src="@drawable/baseline_navigate_next_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/current_user_offers"
+            tools:ignore="ContentDescription,ImageContrastCheck" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

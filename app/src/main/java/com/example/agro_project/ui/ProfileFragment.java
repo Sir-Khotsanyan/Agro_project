@@ -13,6 +13,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.agro_project.CurrentUserOffersActivity;
+import com.example.agro_project.CurrentUserRequestsActivity;
 import com.example.agro_project.LoginActivity;
 import com.example.agro_project.databinding.FragmentProfileBinding;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,6 +35,16 @@ public class ProfileFragment extends Fragment {
             binding.profileUsername.setText(username);
             binding.profileEmail.setText(gmail);
         }
+
+        binding.currentRequests.setOnClickListener(view -> {
+            Intent intent=new Intent(requireActivity(), CurrentUserRequestsActivity.class);
+            startActivity(intent);
+        });
+
+        binding.currentOffers.setOnClickListener(view -> {
+            Intent intent=new Intent(requireActivity(), CurrentUserOffersActivity.class);
+            startActivity(intent);
+        });
 
         binding.logoutButton.setOnClickListener(view -> {
             if (isLoggingOut) {

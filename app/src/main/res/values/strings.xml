@@ -21,5 +21,9 @@
     <string name="price_">Գինը 1կգ-ի համար `</string>
     <string name="util_when_unnecessary_">Անհրաժեշտ է մինչև `</string>
     <string name="city_">Քաղաք ` </string>
+    <string name="current_user_requests">Իմ հայտերը</string>
+    <string name="current_user_offers">Իմ առաջարկները</string>
+    <string name="no_request_text">Դուք հայտեր չունեք</string>
+    <string name="no_offer_text">Դուք առաջարկներ չունեք</string>
 
 </resources>

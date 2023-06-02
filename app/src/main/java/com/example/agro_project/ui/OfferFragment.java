@@ -426,14 +426,6 @@ public class OfferFragment extends Fragment {
                 super(binding.getRoot());
                 this.binding = binding;
 
-                binding.messageDelete.setOnClickListener(view -> {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
-                    builder.setMessage("Վստա՞հ եք, որ ուզում եք ջնջել")
-                            .setTitle("Ջնջել")
-                            .setPositiveButton("Ջնջել", (dialog, id) -> agroViewModel.deleteOffer(offers.get(getAbsoluteAdapterPosition())))
-                            .setNegativeButton("Չեղարկել", (dialog, id) -> dialog.dismiss());
-                    builder.create().show();
-                });
             }
         }
     }

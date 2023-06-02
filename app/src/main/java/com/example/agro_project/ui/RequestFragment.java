@@ -70,10 +70,7 @@ public class RequestFragment extends Fragment {
             binding.progressBar.setVisibility(View.VISIBLE);
             agroViewModel.getRequests().observe(getViewLifecycleOwner(), requests -> {
                 adapter.setData(requests);
-                if (!requests.isEmpty()) {
-                    binding.noResultsText.setVisibility(View.GONE);
-                    binding.itemListRequest.scrollToPosition(requests.size() - 1);
-                }
+                updateNoRequestVisibility(requests);
                 binding.progressBar.setVisibility(View.GONE);
             });
         }
@@ -133,7 +130,6 @@ public class RequestFragment extends Fragment {
                     }
                 });
             }
-
         });
 
         agroViewModel.readRequest();
@@ -193,7 +189,7 @@ public class RequestFragment extends Fragment {
     }
 
     @SuppressLint("ResourceAsColor")
-    private void openDatePicker(TextView utilWhenUnnecessaryTextView) {
+    public void openDatePicker(TextView utilWhenUnnecessaryTextView) {
         Calendar calendar = Calendar.getInstance();
         int year = calendar.get(Calendar.YEAR);
         int month = calendar.get(Calendar.MONTH);
@@ -215,7 +211,7 @@ public class RequestFragment extends Fragment {
                     imm.hideSoftInputFromWindow(utilWhenUnnecessaryTextView.getWindowToken(), 0);
                 }, year, month, day);
 
-        datePickerDialog.setTitle("Ընտրեք, թե մինչև երբ է անհրաժեշտ ");
+        datePickerDialog.setTitle("Նշեք ժամկետը ");
         datePickerDialog.setButton(DatePickerDialog.BUTTON_POSITIVE, "Հաստատել", datePickerDialog);
         datePickerDialog.setButton(DatePickerDialog.BUTTON_NEGATIVE, "Չեղարկել", datePickerDialog);
 
@@ -223,7 +219,7 @@ public class RequestFragment extends Fragment {
         datePickerDialog.show();
     }
 
-    private void showNoInternetDialog() {
+    public void showNoInternetDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Ցանցին միացում չկա")
                 .setMessage("Խնդրում ենք ստուգել ձեր կապը համացանցին և նորից փորձել։")
@@ -236,6 +232,14 @@ public class RequestFragment extends Fragment {
                 })
                 .setCancelable(false)
                 .show();
+    }
+    private void updateNoRequestVisibility(List<Request> requests) {
+        if (!requests.isEmpty()) {
+            binding.noResultsText.setVisibility(View.GONE);
+            binding.itemListRequest.scrollToPosition(requests.size() - 1);
+        } else {
+            binding.noResultsText.setVisibility(View.VISIBLE);
+        }
     }
 
     private class RequestAdapter extends RecyclerView.Adapter<RequestFragment.RequestAdapter.ViewHolder> {
@@ -321,14 +325,6 @@ public class RequestFragment extends Fragment {
                 super(binding.getRoot());
                 this.binding = binding;
 
-                binding.messageDelete.setOnClickListener(view -> {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(itemView.getContext());
-                    builder.setMessage("Վստա՞հ եք, որ ուզում եք ջնջել")
-                            .setTitle("Ջնջել")
-                            .setPositiveButton("Ջնջել", (dialog, id) -> agroViewModel.deleteRequest(requests.get(getAbsoluteAdapterPosition())))
-                            .setNegativeButton("Չեղարկել", (dialog, id) -> dialog.dismiss());
-                    builder.create().show();
-                });
             }
         }
     }
