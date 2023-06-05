@@ -1,4 +1,4 @@
-package com.example.agro_project;
+package com.app.agro_project;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,8 +15,8 @@ import android.view.ViewGroup;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.example.agro_project.database.Offer;
-import com.example.agro_project.databinding.ItemRecyclerVewCurrentUserInputsBinding;
+import com.app.agro_project.database.Offer;
+import com.app.agro_project.databinding.ItemRecyclerVewCurrentUserInputsBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 

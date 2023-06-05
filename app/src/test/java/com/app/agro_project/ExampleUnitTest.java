@@ -1,4 +1,4 @@
-package com.example.agro_project;
+package com.app.agro_project;
 
 import org.junit.Test;
 

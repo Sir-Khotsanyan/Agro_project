@@ -1,4 +1,4 @@
-package com.example.agro_project;
+package com.app.agro_project;
 
 import android.annotation.SuppressLint;
 import android.app.Application;
@@ -7,10 +7,10 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.agro_project.database.AppDatabase;
-import com.example.agro_project.database.DatabaseClient;
-import com.example.agro_project.database.Offer;
-import com.example.agro_project.database.Request;
+import com.app.agro_project.database.AppDatabase;
+import com.app.agro_project.database.DatabaseClient;
+import com.app.agro_project.database.Offer;
+import com.app.agro_project.database.Request;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;

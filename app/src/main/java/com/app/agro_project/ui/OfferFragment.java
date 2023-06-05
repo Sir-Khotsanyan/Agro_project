@@ -1,4 +1,4 @@
-package com.example.agro_project.ui;
+package com.app.agro_project.ui;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -37,11 +37,11 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.agro_project.AgroViewModel;
-import com.example.agro_project.R;
-import com.example.agro_project.database.Offer;
-import com.example.agro_project.databinding.FragmentOfferBinding;
-import com.example.agro_project.databinding.ItemRecyclerViewBinding;
+import com.app.agro_project.AgroViewModel;
+import com.app.agro_project.R;
+import com.app.agro_project.database.Offer;
+import com.app.agro_project.databinding.FragmentOfferBinding;
+import com.app.agro_project.databinding.ItemRecyclerViewBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;

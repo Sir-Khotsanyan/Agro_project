@@ -1,4 +1,4 @@
-package com.example.agro_project.ui;
+package com.app.agro_project.ui;
 
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
@@ -28,11 +28,11 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.example.agro_project.AgroViewModel;
-import com.example.agro_project.R;
-import com.example.agro_project.database.Request;
-import com.example.agro_project.databinding.FragmentRequestBinding;
-import com.example.agro_project.databinding.ItemRecyclerViewBinding;
+import com.app.agro_project.AgroViewModel;
+import com.app.agro_project.R;
+import com.app.agro_project.database.Request;
+import com.app.agro_project.databinding.FragmentRequestBinding;
+import com.app.agro_project.databinding.ItemRecyclerViewBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 

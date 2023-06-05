@@ -1,4 +1,4 @@
-package com.example.agro_project.database;
+package com.app.agro_project.database;
 
 import androidx.room.Database;
 import androidx.room.RoomDatabase;

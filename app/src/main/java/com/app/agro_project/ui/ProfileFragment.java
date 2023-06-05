@@ -1,4 +1,4 @@
-package com.example.agro_project.ui;
+package com.app.agro_project.ui;
 
 import android.app.AlertDialog;
 import android.content.Intent;
@@ -13,10 +13,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.example.agro_project.CurrentUserOffersActivity;
-import com.example.agro_project.CurrentUserRequestsActivity;
-import com.example.agro_project.LoginActivity;
-import com.example.agro_project.databinding.FragmentProfileBinding;
+import com.app.agro_project.CurrentUserOffersActivity;
+import com.app.agro_project.CurrentUserRequestsActivity;
+import com.app.agro_project.LoginActivity;
+import com.app.agro_project.databinding.FragmentProfileBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 

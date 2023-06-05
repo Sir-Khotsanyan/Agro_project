@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/navigation_request"
-        android:name="com.example.agro_project.ui.RequestFragment"
+        android:name="com.app.agro_project.ui.RequestFragment"
         android:label="@string/title_request"
         tools:layout="@layout/fragment_request" />
 
     <fragment
         android:id="@+id/navigation_offer"
-        android:name="com.example.agro_project.ui.OfferFragment"
+        android:name="com.app.agro_project.ui.OfferFragment"
         android:label="@string/title_offer"
         tools:layout="@layout/fragment_offer" />
 
     <fragment
         android:id="@+id/navigation_profile"
-        android:name="com.example.agro_project.ui.ProfileFragment"
+        android:name="com.app.agro_project.ui.ProfileFragment"
         android:label="@string/title_profile"
         tools:layout="@layout/fragment_profile" />
 </navigation>

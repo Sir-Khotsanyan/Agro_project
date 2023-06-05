@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace 'com.example.agro_project'
+    namespace 'com.app.agro_project'
     compileSdk 33
 
     defaultConfig {
-        applicationId "com.example.agro_project"
+        applicationId "com.app.agro_project"
         minSdk 24
         targetSdk 33
         versionCode 1
