@@ -3,12 +3,13 @@ package com.app.agro_project.ui;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.SearchView;
 import androidx.fragment.app.Fragment;
@@ -16,6 +17,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +30,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.app.agro_project.AgroViewModel;
 import com.app.agro_project.R;
 import com.app.agro_project.database.Request;
@@ -111,10 +114,11 @@ public class RequestFragment extends Fragment {
 
                 dialog.show();
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(buttonView -> {
-                    String name = nameEditText.getText().toString().trim();
+                    String name = nameEditText.getText().toString().trim().toLowerCase();
                     String weightString = weightEditText.getText().toString().trim();
                     String priceString = priceEditText.getText().toString().trim();
                     String city = cityEditText.getText().toString().trim();
+                    city = city.substring(0, 1).toUpperCase() + city.substring(1).toLowerCase();
 
                     if (name.isEmpty() || weightString.isEmpty() || priceString.isEmpty() || city.isEmpty()) {
                         Toast.makeText(requireContext(), "Խնդրում ենք լրացրեք բոլոր տվյալները", Toast.LENGTH_SHORT).show();
@@ -122,10 +126,10 @@ public class RequestFragment extends Fragment {
                         int weight = Integer.parseInt(weightString);
                         int price = Integer.parseInt(priceString);
                         String formattedDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.getTime());
-                        FirebaseUser firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
-                        String currentUserName= Objects.requireNonNull(firebaseUser).getDisplayName();
-                        String currentUserEmail=firebaseUser.getEmail();
-                        agroViewModel.addRequest(name, weight, price, city, formattedDate, currentUserName,currentUserEmail);
+                        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        String currentUserName = Objects.requireNonNull(firebaseUser).getDisplayName();
+                        String currentUserEmail = firebaseUser.getEmail();
+                        agroViewModel.addRequest(name, weight, price, city, formattedDate, currentUserName, currentUserEmail);
                         dialog.dismiss();
                     }
                 });
@@ -233,6 +237,7 @@ public class RequestFragment extends Fragment {
                 .setCancelable(false)
                 .show();
     }
+
     private void updateNoRequestVisibility(List<Request> requests) {
         if (!requests.isEmpty()) {
             binding.noResultsText.setVisibility(View.GONE);
@@ -290,8 +295,8 @@ public class RequestFragment extends Fragment {
             TextView requestUtilWhenUnnecessaryTitle = dialogView.findViewById(R.id.request_util_when_unnecessary);
             TextView requestCity = dialogView.findViewById(R.id.request_city);
             TextView requestSendDate = dialogView.findViewById(R.id.request_send_date);
-            TextView requestUsename=dialogView.findViewById(R.id.request_username);
-            TextView requestUserEmail=dialogView.findViewById(R.id.request_user_email);
+            TextView requestUsename = dialogView.findViewById(R.id.request_username);
+            TextView requestUserEmail = dialogView.findViewById(R.id.request_user_email);
 
             requestName.setText(request.requestNameOfProduct);
             requestWeight.setText(String.valueOf(request.requestWeight));
@@ -307,15 +312,26 @@ public class RequestFragment extends Fragment {
                         //Do nothing
                     });
 
-            requestUserEmail.setOnLongClickListener(v -> {
-                ClipboardManager clipboard = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                ClipData clip = ClipData.newPlainText("User Email", request.currentUserEmail);
-                clipboard.setPrimaryClip(clip);
-                return true;
+            requestUserEmail.setOnClickListener(v -> {
+                String subject = request.requestNameOfProduct + " " + request.requestWeight + "կգ(" + request.requestSendDate + ")";
+                String recipientEmail = request.currentUserEmail;
+                openMailWindow(subject, recipientEmail);
+            });
+
+            requestUsename.setOnClickListener(v -> {
+                String subject = request.requestNameOfProduct + " " + request.requestWeight + "կգ(" + request.requestSendDate + ")";
+                String recipientEmail = request.currentUserEmail;
+                openMailWindow(subject, recipientEmail);
             });
 
             AlertDialog dialog = builder.create();
             dialog.show();
+        }
+
+        private void openMailWindow(String subject, String address) {
+            Intent intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("mailto:?subject=" + subject + "&to=" + address));
+            startActivity(Intent.createChooser(intent, "Նամակն ուղարկել․․․"));
         }
 
         class ViewHolder extends RecyclerView.ViewHolder {

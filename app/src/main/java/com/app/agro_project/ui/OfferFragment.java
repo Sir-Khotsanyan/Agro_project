@@ -4,8 +4,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.DatePickerDialog;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -47,7 +45,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.storage.FirebaseStorage;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
-
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -141,11 +138,11 @@ public class OfferFragment extends Fragment {
                 dialog.show();
 
                 dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener(buttonView -> {
-                    String name = nameEditText.getText().toString().trim();
+                    String name = nameEditText.getText().toString().trim().toLowerCase();
                     String weightString = weightEditText.getText().toString().trim();
                     String priceString = priceEditText.getText().toString().trim();
                     String city = cityEditText.getText().toString().trim();
-
+                    city = city.substring(0, 1).toUpperCase() + city.substring(1).toLowerCase();
 
                     if (name.isEmpty() || weightString.isEmpty() || priceString.isEmpty() || city.isEmpty()) {
                         Toast.makeText(requireContext(), "Խնդրում ենք լրացրեք բոլոր տվյալները", Toast.LENGTH_SHORT).show();
@@ -153,10 +150,10 @@ public class OfferFragment extends Fragment {
                         int weight = Integer.parseInt(weightString);
                         int price = Integer.parseInt(priceString);
                         String formattedDate = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault()).format(selectedDate.getTime());
-                        FirebaseUser firebaseUser=FirebaseAuth.getInstance().getCurrentUser();
-                        String currentUserName= Objects.requireNonNull(firebaseUser).getDisplayName();
-                        String currentUserEmail=firebaseUser.getEmail();
-                        agroViewModel.addOffer(name, weight, price, city, formattedDate,offerImageUrl,currentUserName, currentUserEmail);
+                        FirebaseUser firebaseUser = FirebaseAuth.getInstance().getCurrentUser();
+                        String currentUserName = Objects.requireNonNull(firebaseUser).getDisplayName();
+                        String currentUserEmail = firebaseUser.getEmail();
+                        agroViewModel.addOffer(name, weight, price, city, formattedDate, offerImageUrl, currentUserName, currentUserEmail);
                         dialog.dismiss();
                     }
                 });
@@ -308,6 +305,7 @@ public class OfferFragment extends Fragment {
                     alertDialog.dismiss();
                 });
     }
+
     private void showNoInternetDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(requireContext());
         builder.setTitle("Ցանցին միացում չկա")
@@ -371,10 +369,10 @@ public class OfferFragment extends Fragment {
             TextView offerUtilWhenUnnecessaryTitle = dialogView.findViewById(R.id.offer_util_when_unnecessary);
             TextView offerCity = dialogView.findViewById(R.id.offer_city);
             TextView offerSendDate = dialogView.findViewById(R.id.offer_send_date);
-            TextView offerUsename=dialogView.findViewById(R.id.offer_username);
-            TextView offerUserEmail=dialogView.findViewById(R.id.offer_user_email);
+            TextView offerUsename = dialogView.findViewById(R.id.offer_username);
+            TextView offerUserEmail = dialogView.findViewById(R.id.offer_user_email);
             ImageView offerImage = dialogView.findViewById(R.id.offer_image);
-            ProgressBar progressBar=dialogView.findViewById(R.id.progress_bar);
+            ProgressBar progressBar = dialogView.findViewById(R.id.progress_bar);
 
             offerName.setText(offer.offerNameOfProduct);
             offerWeight.setText(String.valueOf(offer.offerWeight));
@@ -409,17 +407,29 @@ public class OfferFragment extends Fragment {
                         //Do nothing
                     });
 
-            offerUserEmail.setOnLongClickListener(v -> {
-                        ClipboardManager clipboard = (ClipboardManager) v.getContext().getSystemService(Context.CLIPBOARD_SERVICE);
-                        ClipData clip = ClipData.newPlainText("User Email", offer.currentUserEmail);
-                        clipboard.setPrimaryClip(clip);
-                        return true;
-                    });
+            offerUserEmail.setOnClickListener(v -> {
+                String subject = offer.offerNameOfProduct + " " + offer.offerWeight + "կգ(" + offer.offerSendDate + ")";
+                String recipientEmail = offer.currentUserEmail;
+                openMailWindow(subject, recipientEmail);
+            });
+
+            offerUsename.setOnClickListener(v -> {
+                String subject = offer.offerNameOfProduct + " " + offer.offerWeight + "կգ(" + offer.offerSendDate + ")";
+                String recipientEmail = offer.currentUserEmail;
+                openMailWindow(subject, recipientEmail);
+            });
+
             AlertDialog dialog = builder.create();
             dialog.show();
         }
 
-            class ViewHolder extends RecyclerView.ViewHolder {
+        private void openMailWindow(String subject, String address){
+            Intent intent=new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("mailto:?subject="+subject+"&to="+address));
+            startActivity(Intent.createChooser(intent,"Նամակն ուղարկել․․․"));
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder {
             ItemRecyclerViewBinding binding;
 
             public ViewHolder(@NonNull ItemRecyclerViewBinding binding) {
